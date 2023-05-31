@@ -1,0 +1,53 @@
+﻿@model ShoppingCart
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Shopping Cart</h1>
+
+@if (Model.CartItems.Any())
+{
+<p>
+    This shopping cart is only valid until @(Model.ValidUntil.Date)
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Item
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Amount
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CartItems) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopItem.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopItem.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                <a asp-action="RemoveFromBasket" asp-route-id="@item.ShopItem.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+    </table>
+}
+else
+{
+    <p>You don't have any items in your shoppingcart.</p>
+}
