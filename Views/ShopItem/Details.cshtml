@@ -1,4 +1,7 @@
 ﻿@model MVCWebshop.Models.ShopItem
+@using MVCWebshop.Data
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Details";
@@ -41,7 +44,7 @@
     {
        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
     }
-    @if (@User != null)
+@if (SignInManager.IsSignedIn(User))
     {
         // gaat ID en amount meegeven in functie addtobasket in controller
         <form asp-action="AddToCart" asp-route-id="@Model?.Id">

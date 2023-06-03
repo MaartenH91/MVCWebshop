@@ -4,13 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Orders</h1>
-@if (User.IsInRole("Admin"))
-{
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-}
+<h1>My Orders</h1>
 @if (Model.Any())
 {
     <table class="table">

@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Kind" class="control-label"></label>
-                <select asp-for="Kind" class="form-control"></select>
+                <select asp-for="Kind" asp-items="Html.GetEnumSelectList<Plant>()" class="form-control"></select>
                 <span asp-validation-for="Kind" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control" asp-format="{0:n2}" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">

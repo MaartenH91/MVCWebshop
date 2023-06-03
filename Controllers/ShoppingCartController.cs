@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using MVCWebshop.Models;
 
 namespace MVCWebshop.Controllers
 {
+    [Authorize(Roles = "Admin,User")]
     public class ShoppingCartController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,7 +28,11 @@ namespace MVCWebshop.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = (await _userManager.GetUserAsync(User)).Id;
-            var user = await _context.Users.Include(c => c.ShoppingCart).ThenInclude(w => w.CartItems).FirstAsync(u => u.Id == userId);
+            var user = await _context.Users
+                .Include(c => c.ShoppingCart)
+                .ThenInclude(w => w.CartItems)
+                .ThenInclude(s => s.ShopItem)
+                .FirstAsync(u => u.Id == userId);
             // push shoppingcart to view index
             return View(user.ShoppingCart);
         }
@@ -40,7 +46,11 @@ namespace MVCWebshop.Controllers
             if (shopItem != null)
             {
                 var userId = (await _userManager.GetUserAsync(User)).Id;
-                var user = await _context.Users.Include(c=>c.ShoppingCart).ThenInclude(w=>w.CartItems).FirstAsync(u=>u.Id == userId);
+                var user = await _context.Users
+                    .Include(c=>c.ShoppingCart)
+                    .ThenInclude(w=>w.CartItems)
+                    .ThenInclude(s=>s.ShopItem)
+                    .FirstAsync(u=>u.Id == userId);
                 user.ShoppingCart.RemoveItem(shopItem);
                 await _context.SaveChangesAsync();
             }
@@ -53,7 +63,10 @@ namespace MVCWebshop.Controllers
         public async Task<ActionResult> ClearShoppingCart()
         {
             var userId = (await _userManager.GetUserAsync(User)).Id;
-            var user = await _context.Users.Include(c => c.ShoppingCart).ThenInclude(w => w.CartItems).FirstAsync(u => u.Id == userId);
+            var user = await _context.Users
+                .Include(c => c.ShoppingCart)
+                .ThenInclude(w => w.CartItems)
+                .FirstAsync(u => u.Id == userId);
             user.ShoppingCart.Clear();
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -61,10 +74,14 @@ namespace MVCWebshop.Controllers
 
         // Make order for complete shoppingcart
         [HttpGet, ActionName("Order")]
-        private async Task<IActionResult> Order()
+        public async Task<IActionResult> Order()
         {
             var userId = (await _userManager.GetUserAsync(User)).Id;
-            var user = await _context.Users.Include(c => c.ShoppingCart).ThenInclude(w => w.CartItems).FirstAsync(u => u.Id == userId);
+            var user = await _context.Users
+                .Include(o=>o.Orders)
+                .Include(c => c.ShoppingCart)
+                .ThenInclude(w => w.CartItems)
+                .FirstAsync(u => u.Id == userId);
             if (user.ShoppingCart.CartItems.Any())
             {
                 user.Orders.Add(
@@ -78,7 +95,7 @@ namespace MVCWebshop.Controllers
                 user.ShoppingCart.Clear();
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Order");
         }
 
 

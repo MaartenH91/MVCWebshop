@@ -4,6 +4,7 @@ using MVCWebshop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVCWebshop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230601213436_logins")]
+    partial class logins
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,7 +275,7 @@ namespace MVCWebshop.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("MVCWebshop.Models.Order", b =>
@@ -307,7 +309,7 @@ namespace MVCWebshop.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("MVCWebshop.Models.ShopItem", b =>
@@ -334,7 +336,7 @@ namespace MVCWebshop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShopItem", (string)null);
+                    b.ToTable("ShopItem");
                 });
 
             modelBuilder.Entity("MVCWebshop.Models.ShoppingCart", b =>
@@ -350,7 +352,7 @@ namespace MVCWebshop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCart", (string)null);
+                    b.ToTable("ShoppingCart");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +12,34 @@ using MVCWebshop.Models;
 
 namespace MVCWebshop.Controllers
 {
+    [Authorize(Roles = "Admin,User")]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrderController(ApplicationDbContext context)
+        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Order
         public async Task<IActionResult> Index()
         {
-              return _context.Order != null ? 
-                          View(await _context.Order.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Order'  is null.");
+            var applicationUser = (await _userManager.GetUserAsync(User));
+            if (await _userManager.IsInRoleAsync(applicationUser, "Admin") && _context.Order != null)
+            {
+                return View(await _context.Order.ToListAsync());
+            }
+            else
+            {
+                var userId = applicationUser.Id;
+                var user = await _context.Users
+                    .Include(c => c.Orders)
+                    .FirstAsync(u => u.Id == userId);
+                return View(user.Orders);
+            }
         }
 
         // GET: Order/Details/5
@@ -36,6 +51,9 @@ namespace MVCWebshop.Controllers
             }
 
             var order = await _context.Order
+                .Include(b => b.ShoppingCart)
+                .ThenInclude(w=>w.CartItems)
+                .ThenInclude(i=>i.ShopItem)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {

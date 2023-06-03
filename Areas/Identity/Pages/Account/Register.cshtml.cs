@@ -87,11 +87,6 @@ namespace MVCWebshop.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 5)]
-            [Display(Name = "Username")]
-            public string UserName { get; set; }
-
-            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             [Display(Name = "First name")]
             public string FirstName { get; set; }
@@ -149,7 +144,6 @@ namespace MVCWebshop.Areas.Identity.Pages.Account
                 // add all input to registered user
                 // Create new shoppingcart and orderlist for registered user.
                 var user = CreateUser();
-                user.UserName = Input.UserName;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.Address = Input.Address;
@@ -160,7 +154,7 @@ namespace MVCWebshop.Areas.Identity.Pages.Account
 
                 // check is there is a role with name user -> if exists it gets assigned to created user
                 // Change this to make admin user by default
-                var defaultRole = _roleManager.FindByNameAsync("Admin").Result;
+                var defaultRole = _roleManager.FindByNameAsync("User").Result;
                 if (defaultRole != null)
                 {
                     IdentityResult roleResult = await _userManager.AddToRoleAsync(user, defaultRole.Name);

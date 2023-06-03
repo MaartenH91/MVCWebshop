@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,9 +17,10 @@ namespace MVCWebshop.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ShopItemController(ApplicationDbContext context)
+        public ShopItemController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ShopItem
@@ -48,6 +50,7 @@ namespace MVCWebshop.Controllers
         }
 
         // GET: ShopItem/Create
+        [Authorize(Roles="Admin")]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +61,7 @@ namespace MVCWebshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Kind,Name,Price,Description")] ShopItem shopItem)
         {
             if (ModelState.IsValid)
@@ -70,6 +74,7 @@ namespace MVCWebshop.Controllers
         }
 
         // GET: ShopItem/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.ShopItem == null)
@@ -90,6 +95,7 @@ namespace MVCWebshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Kind,Name,Price,Description")] ShopItem shopItem)
         {
             if (id != shopItem.Id)
@@ -121,6 +127,7 @@ namespace MVCWebshop.Controllers
         }
 
         // GET: ShopItem/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.ShopItem == null)
@@ -141,6 +148,7 @@ namespace MVCWebshop.Controllers
         // POST: ShopItem/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.ShopItem == null)
