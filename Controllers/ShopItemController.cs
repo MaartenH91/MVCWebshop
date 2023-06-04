@@ -26,9 +26,20 @@ namespace MVCWebshop.Controllers
         // GET: ShopItem
         public async Task<IActionResult> Index()
         {
-              return _context.ShopItem != null ? 
-                          View(await _context.ShopItem.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.ShopItem'  is null.");
+            var applicationUser = (await _userManager.GetUserAsync(User));
+            if (await _userManager.IsInRoleAsync(applicationUser, "Admin"))
+            {
+                return _context.ShopItem != null ?
+                            View(await _context.ShopItem.ToListAsync()) :
+                            Problem("Entity set 'ApplicationDbContext.ShopItem'  is null.");
+            }
+            else
+            {
+                return _context.ShopItem != null ?
+                              View(await _context.ShopItem.Where(a => a.Amount > 0).ToListAsync()) :
+                              Problem("Entity set 'ApplicationDbContext.ShopItem'  is null.");
+            }
+
         }
 
         // GET: ShopItem/Details/5
@@ -186,7 +197,12 @@ namespace MVCWebshop.Controllers
                 var userId = (await _userManager.GetUserAsync(User)).Id;
                 // check all users in context, ask for user met same id as user who called addtobasket.
                 // include items into shoppingcart
-                var user = await _context.Users.Where(u => u.Id == userId).Include(c => c.ShoppingCart).ThenInclude(w => w.CartItems).ThenInclude(c => c.ShopItem).FirstAsync();
+                var user = await _context.Users
+                    .Where(u => u.Id == userId)
+                    .Include(c => c.ShoppingCart)
+                    .ThenInclude(w => w.CartItems)
+                    .ThenInclude(c => c.ShopItem)
+                    .FirstAsync();
                 user.ShoppingCart.AddItem(shopItem, amount);
             }
             await _context.SaveChangesAsync();

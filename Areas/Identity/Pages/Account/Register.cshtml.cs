@@ -79,43 +79,48 @@ namespace MVCWebshop.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            
+
             // Add all needed input to the registerpage. Make sure there is validation by using correct stringlengths, displays, regex and errormessages.
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
+            [Required, EmailAddress, Display(Name = "Email/Username")]
             public string Email { get; set; }
 
-            [Required]
+            [Required, Display(Name = "First name")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-            [Display(Name = "First name")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required, Display(Name = "Last name")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-            [Display(Name = "Last name")]
             public string LastName { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 5)]
-            [Display(Name = "Address")]
-            public string Address { get; set; }
-
-            [Required]
+            [Required, Display(Name = "Country")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-            [Display(Name = "Country")]
             public string Country { get; set; }
 
-            [Required]
-            [CreditCard]
-            [Display(Name = "Bank account nr.")]
+            [Required, Display(Name ="Postal Code")]
+            [DataType(DataType.PostalCode)]
+            public string PostalCode { get; set; }
+
+            [Required, Display(Name = "City")]
+            public string City { get; set; }
+
+            [Required, Display(Name = "Street")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 5)]
+            public string Street { get; set; }
+
+            [Required,Display(Name = "Number")]
+            [Range(0,99999,ErrorMessage = "Pick a correct number.")]
+            public int Number { get; set; }
+
+            [Display(Name = "Box Number")]
+            public char BoxNumber { get; set; }
+
+            [Required, CreditCard, Display(Name = "Bank account nr.")]
             public string BankAccount { get; set; }
 
-            [Required]
+            [Required, Display(Name = "Password")]
             [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Your password must contain at least one uppercase, one lower case, one digit and one special character (@$!%*?&).")]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
             public string Password { get; set; }
 
             /// <summary>
@@ -141,58 +146,72 @@ namespace MVCWebshop.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // add all input to registered user
-                // Create new shoppingcart and orderlist for registered user.
-                var user = CreateUser();
-                user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
-                user.Address = Input.Address;
-                user.Country = Input.Country;
-                user.BankAccount = Input.BankAccount;
-                user.ShoppingCart = new ShoppingCart();
-                user.Orders = new List<Order>();
-
-                // check is there is a role with name user -> if exists it gets assigned to created user
-                // Change this to make admin user by default
-                var defaultRole = _roleManager.FindByNameAsync("User").Result;
-                if (defaultRole != null)
+                var bankAccount = _userManager.Users.Where(b=>b.BankAccount == Input.BankAccount).FirstOrDefault();
+                if(bankAccount == null)
                 {
-                    IdentityResult roleResult = await _userManager.AddToRoleAsync(user, defaultRole.Name);
-                }
+                    var user = CreateUser();
+                    user.FirstName = Input.FirstName;
+                    user.LastName = Input.LastName;
+                    user.Email = Input.Email;
+                    user.City = Input.City;
+                    user.PostalCode = Input.PostalCode;
+                    user.Street = Input.Street;
+                    user.Number = Input.Number;
+                    user.BoxNumber = Input.BoxNumber;
+                    user.Country = Input.Country;
+                    user.BankAccount = Input.BankAccount;
+                    user.ShoppingCart = new ShoppingCart();
+                    user.Orders = new List<Order>();
+                    // add all input to registered user
+                    // Create new shoppingcart and orderlist for registered user.
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    // check is there is a role with name user -> if exists it gets assigned to created user
+                    // Change this to make admin user by default
+                    var defaultRole = _roleManager.FindByNameAsync("User").Result;
+                    if (defaultRole != null)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        IdentityResult roleResult = await _userManager.AddToRoleAsync(user, defaultRole.Name);
                     }
-                    else
+
+                    await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                    await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+
+                    if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
                     }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    throw new InvalidOperationException("Bankaccount already exists.");
                 }
             }
 

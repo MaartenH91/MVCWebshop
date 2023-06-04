@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<MVCWebshop.Models.ShopItem>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Shop Items";
 }
 
 <h1>Shop Item</h1>
@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -43,12 +46,27 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
                     @if (@User.IsInRole("Admin"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (@User.IsInRole("User"))
+                    {
+                        // gaat ID en amount meegeven in functie addtobasket in controller
+                        <form asp-action="AddToCart" asp-route-id="@item.Id">
+                            <div class="d-flex">
+                                <input type="number" class="form-control" id="itemAmount" name="amount" min="1" value="1" />
+                                <button type="submit" class="btn btn-primary" id="btnAdd" value="Add">Add</button>
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            </div>
+                        </form>
+                    }
+
+                    
             </td>
         </tr>
 }

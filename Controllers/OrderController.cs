@@ -28,10 +28,12 @@ namespace MVCWebshop.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationUser = (await _userManager.GetUserAsync(User));
+            // admin sees all orders
             if (await _userManager.IsInRoleAsync(applicationUser, "Admin") && _context.Order != null)
             {
                 return View(await _context.Order.ToListAsync());
             }
+            // regular user only sees his own orders
             else
             {
                 var userId = applicationUser.Id;
@@ -61,12 +63,6 @@ namespace MVCWebshop.Controllers
             }
 
             return View(order);
-        }
-
-        // GET: Order/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         // POST: Order/Create
@@ -99,6 +95,27 @@ namespace MVCWebshop.Controllers
                 return NotFound();
             }
             return View(order);
+        }
+        // POST set order on payed
+        public async Task<IActionResult> Pay(int id)
+        {
+            if (id == null || _context.Order == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _context.Order.FindAsync(id);
+            if (order != null)
+            {
+                order.Payed = true;
+                order.OrderPayed = DateTime.Now;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // POST: Order/Edit/5
@@ -178,4 +195,4 @@ namespace MVCWebshop.Controllers
           return (_context.Order?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
-}
+    }

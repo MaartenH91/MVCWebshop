@@ -1,0 +1,81 @@
+﻿body {
+    background-color: #a7cc97;
+}
+
+.navbar {
+    background-color: #2e5c1a!important;
+    color: #FFF;
+}
+.navbar-brand {
+    color: #a7cc97!important;
+}
+
+.navbar-brand:hover {
+    color:#1b380f!important;
+}
+
+.nav-link {
+    color: #FFF!important;
+}
+
+.nav-link:hover {
+    color: #a7cc97!important;
+}
+
+a {
+    color: #2e5c1a !important;
+}
+
+a:hover {
+    color: #FFF!important;
+}
+
+input {
+
+}
+
+.active {
+    background-color: #2e5c1a !important;
+}
+
+.btn-primary {
+    background-color: #2e5c1a !important;
+    color: #FFF!important;
+    border: none!important;
+    box-shadow: none!important;
+}
+
+.btn-primary:hover {
+    background-color: #1b380f !important;
+    color: #a7cc97!important;
+}
+
+.nav-pills .nav-link:hover {
+    color: #2e5c1a!important;
+}
+
+.nav-pills .active:hover {
+    color: #a7cc97 !important;
+    background-color: #1b380f !important;
+}
+
+#itemAmount {
+    width: 20%;
+}
+
+input {
+    margin: 1%;
+}
+button {
+    margin: 1%;
+}
+.table {
+    vertical-align: middle;
+}
+.table a {
+    padding-top: 10px;
+}
+.btn-danger {
+    margin: 1%;
+    color: #FFF!important;
+}

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "36WsvuxoDeswXgMhYwYqn4nsBR94ODYY+JuN6CYsZiM=",
+  "Hash": "4wYtDTREZCLgWd8q56uoEcsf9SHvO6ipLpbkol23vgM=",
   "Source": "MVCWebshop",
   "BasePath": "_content/MVCWebshop",
   "Mode": "Default",
@@ -1069,6 +1069,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\Maarten\\OneDrive - vlot\\HoGent\\Vakken\\Web4\\MVCWebshop\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\MVCWebshop.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\Maarten\\OneDrive - vlot\\HoGent\\Vakken\\Web4\\MVCWebshop\\wwwroot\\css\\layout.css",
+      "SourceId": "MVCWebshop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Maarten\\OneDrive - vlot\\HoGent\\Vakken\\Web4\\MVCWebshop\\wwwroot\\",
+      "BasePath": "_content/MVCWebshop",
+      "RelativePath": "css/layout.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\layout.css"
     },
     {
       "Identity": "C:\\Users\\Maarten\\OneDrive - vlot\\HoGent\\Vakken\\Web4\\MVCWebshop\\wwwroot\\css\\site.css",

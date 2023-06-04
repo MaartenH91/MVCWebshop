@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<MVCWebshop.Models.Order>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Orders";
 }
 
 <h1>My Orders</h1>
@@ -35,13 +35,12 @@
                     @Html.DisplayFor(modelItem => item.Remark)
                 </td>
                 <td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                    <p>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </p>
-}
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Pay" asp-route-id="@item.Id">Pay</a>
                 </td>
             </tr>
     }

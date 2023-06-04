@@ -10,6 +10,13 @@ namespace MVCWebshop.Data
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<ShopItem>()
+                .Property(x => x.Price)
+                .HasColumnType("decimal(6,2)");
+        }
         public DbSet<ShoppingCart> ShoppingCart { get; set; }
         public DbSet<ShopItem> ShopItem { get; set; }
         public DbSet<Order> Order { get; set; }

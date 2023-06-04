@@ -298,3 +298,4 @@ C:\Users\Maarten\OneDrive - vlot\HoGent\Vakken\Web4\MVCWebshop\obj\Debug\net6.0\
 C:\Users\Maarten\OneDrive - vlot\HoGent\Vakken\Web4\MVCWebshop\obj\Debug\net6.0\ref\MVCWebshop.dll
 C:\Users\Maarten\OneDrive - vlot\HoGent\Vakken\Web4\MVCWebshop\obj\Debug\net6.0\MVCWebshop.pdb
 C:\Users\Maarten\OneDrive - vlot\HoGent\Vakken\Web4\MVCWebshop\obj\Debug\net6.0\MVCWebshop.genruntimeconfig.cache
+C:\Users\Maarten\OneDrive - vlot\HoGent\Vakken\Web4\MVCWebshop\obj\Debug\net6.0\MVCWebshop.csproj.AssemblyReference.cache

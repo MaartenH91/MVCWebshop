@@ -51,7 +51,8 @@ namespace MVCWebshop.Controllers
                     .ThenInclude(w=>w.CartItems)
                     .ThenInclude(s=>s.ShopItem)
                     .FirstAsync(u=>u.Id == userId);
-                user.ShoppingCart.RemoveItem(shopItem);
+                // verwijderen van item uit databank
+                _context.CartItems.Remove(user.ShoppingCart.CartItems.FirstOrDefault(i=>i.ShopItem.Id == shopItem.Id));
                 await _context.SaveChangesAsync();
             }
             // redirect to the public async task Index => index of shoppingcart
@@ -87,7 +88,7 @@ namespace MVCWebshop.Controllers
                 user.Orders.Add(
                     new Order()
                     {
-                        OrderAddress = user.Address,
+                        OrderAddress = user.Street,
                         ShoppingCart = new ShoppingCart(user.ShoppingCart.CartItems, user.ShoppingCart.ValidUntil),
                         StartOrder = DateTime.Now,
                         Remark = $"Number of ordered items: {user.ShoppingCart.CartItems.Sum(r=>r.Amount)}"

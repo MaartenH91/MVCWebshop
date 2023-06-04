@@ -59,6 +59,42 @@ namespace MVCWebshop.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [EmailAddress, Display(Name = "Email address")]
+            public string Email { get; set; }
+            [Required, Display(Name = "First name")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string FirstName { get; set; }
+
+            [Required, Display(Name = "Last name")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string LastName { get; set; }
+
+            [Required, Display(Name = "Country")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string Country { get; set; }
+
+            [Required, Display(Name = "Postal Code")]
+            [DataType(DataType.PostalCode)]
+            public string PostalCode { get; set; }
+
+            [Required, Display(Name = "City")]
+            public string City { get; set; }
+
+            [Required, Display(Name = "Street")]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 5)]
+            public string Street { get; set; }
+
+            [Required, Display(Name = "Number")]
+            [Range(0, 99999, ErrorMessage = "Pick a correct number.")]
+            public int Number { get; set; }
+
+            [Display(Name = "Box Number")]
+            public char BoxNumber { get; set; }
+
+            [Required, Key, CreditCard, Display(Name = "Bank account nr.")]
+            public string BankAccount { get; set; }
+
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -70,7 +106,18 @@ namespace MVCWebshop.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Street = user.Street,
+                Number = user.Number,
+                BoxNumber = user.BoxNumber,
+                City = user.City,
+                PostalCode = user.PostalCode,
+                Country = user.Country,
+                BankAccount = user.BankAccount,
+            
             };
         }
 
@@ -110,7 +157,28 @@ namespace MVCWebshop.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            if (Input.FirstName != user.FirstName)
+                user.FirstName = Input.FirstName;
+            if (Input.LastName != user.LastName)
+                user.LastName = Input.LastName;
+            if (Input.Email != user.Email)
+                user.Email = Input.Email;
+            if (Input.Street != user.Street)
+                user.Street = Input.Street;
+            if (Input.Number != user.Number)
+                user.Number = Input.Number;
+            if (Input.BoxNumber != user.BoxNumber)
+                user.BoxNumber = Input.BoxNumber;
+            if (Input.City != user.City)
+                user.City = Input.City;
+            if (Input.PostalCode != user.PostalCode)
+                user.PostalCode = Input.PostalCode;
+            if (Input.Country != user.Country)
+                user.Country = Input.Country;
+            if (Input.BankAccount != user.BankAccount)
+                user.BankAccount = Input.BankAccount;
+            
+            await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

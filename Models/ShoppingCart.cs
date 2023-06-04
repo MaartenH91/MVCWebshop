@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCWebshop.Models
 {
@@ -8,9 +9,14 @@ namespace MVCWebshop.Models
         public List<CartItem> CartItems { get; set; }
         [DataType(DataType.Date)]
         public DateTime ValidUntil { get; set; }
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(6,2)")]
+        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = true)]
+        public decimal TotalCost { get; set; }
         public ShoppingCart()
         {
             CartItems = new List<CartItem>();
+            TotalCost = 0;
         }
         public ShoppingCart(List<CartItem> cartItems, DateTime validUntil)
         {
